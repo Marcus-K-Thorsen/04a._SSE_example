@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSE</title>
+</head>
+<body>
+    <h1>Server-Sent Events</h1>
+
+    <p>Status:</p>
+    <div id="server-sent_status"></div>
+
+    <p>Joke:</p>
+    <div id="server-sent_joke"></div>
+
+    <script>
+        // Get references to the status and joke divs
+        const serverSentStatusDiv = document.getElementById("server-sent_status");
+        const serverSentJokeDiv = document.getElementById("server-sent_joke");
+
+        // Create a new EventSource to connect to the SSE endpoint defined in app.js
+        const eventSource = new EventSource("/jokes");
+
+        // Listen for messages from the server (sent from app.js)
+        eventSource.addEventListener("message", (event) => {
+            // Update the joke div with the received joke
+            serverSentJokeDiv.textContent = event.data;
+        });
+
+        // Listen for the connection open event
+        eventSource.addEventListener("open", (event) => {
+            // Update the status div to show that the connection is open
+            serverSentStatusDiv.textContent = "Connected";
+        });
+
+        // Listen for errors in the SSE connection
+        eventSource.addEventListener("error", (event) => {
+            if (event.target.readyState === EventSource.CLOSED) {
+                // Update the status div to show that the connection was closed
+                serverSentStatusDiv.textContent = 'Connection was closed';
+            } else if (event.target.readyState === EventSource.CONNECTING) {
+                // Update the status div to show that the client is trying to reconnect
+                serverSentStatusDiv.textContent = 'Connecting...';
+            } else {
+                // Update the status div to show that there was an error
+                serverSentStatusDiv.textContent = 'Error';
+            }
+        });
+    </script>
+</body>
+</html>

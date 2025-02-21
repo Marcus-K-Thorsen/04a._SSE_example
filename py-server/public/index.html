@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSE</title>
+</head>
+<body onload="initializeSSE()">
+    <h1>Server-Sent Events (SSE)</h1>
+
+    <p>Status:</p>
+    <div id="server-sent_status"></div>
+
+    <p>Time:</p>
+    <div id="server-sent_time"></div>
+
+    <p>Joke:</p>
+    <div id="server-sent_joke"></div>
+
+    <script>
+        function initializeSSE() {
+            // Get references to the status and time divs
+            const serverSentStatusDiv = document.getElementById("server-sent_status");
+            const serverSentTimeDiv = document.getElementById("server-sent_time");
+            // Get references to the joke div
+            const serverSentJokeDiv = document.getElementById("server-sent_joke");
+        
+            // Create a new EventSource to connect to the /jokes endpoint
+            const jokeEventSource = new EventSource("/jokes");
+        
+            // Listen for the connection open event
+            jokeEventSource.addEventListener("open", (event) => {
+                // Update the joke div to show that the connection is open
+                serverSentStatusDiv.textContent = "Connected to /jokes endpoint.";
+            });
+        
+            // Listen for messages from the /jokes endpoint
+            jokeEventSource.addEventListener("message", (event) => {
+                // Update the message div with the received message
+                serverSentJokeDiv.textContent = event.data;
+            });
+
+            // Create a new EventSource to connect to the SSE endpoint defined in main.py
+            const eventSource = new EventSource("/synchronizetime");
+
+            // Listen for messages from the server (sent from main.py)
+            eventSource.addEventListener("message", (event) => {
+                // Update the time div with the received time
+                serverSentTimeDiv.textContent = event.data;
+            });
+
+            // Listen for the connection open event
+            eventSource.addEventListener("open", (event) => {
+                // Update the status div to show that the connection is open
+                serverSentStatusDiv.textContent += " Connected to the time endpoint.";
+            });
+
+            // Listen for errors in the SSE connection
+            eventSource.addEventListener("error", (event) => {
+                if (event.target.readyState === EventSource.CLOSED) {
+                    // Update the status div to show that the connection was closed
+                    serverSentStatusDiv.textContent = 'Connection was closed';
+                } else if (event.target.readyState === EventSource.CONNECTING) {
+                    // Update the status div to show that the client is trying to reconnect
+                    serverSentStatusDiv.textContent = 'Connecting...';
+                } else {
+                    // Update the status div to show that there was an error
+                    serverSentStatusDiv.textContent = 'Error';
+                }
+            });
+        };
+    </script>
+</body>
+</html>
