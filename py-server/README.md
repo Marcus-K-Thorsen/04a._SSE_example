@@ -8,6 +8,7 @@
  $ poetry install --no-root
  $ poetry add fastapi
  $ poetry add uvicorn
+ $ poetry add jinja2
 ```
 
 ## Install
@@ -21,6 +22,7 @@
 ```bash
  $ cd <project_directory>
  $ cd py_server
+ $ poetry shell
  $ poetry run uvicorn main:app --reload
 ```
 
