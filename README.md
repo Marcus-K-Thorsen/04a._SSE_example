@@ -68,7 +68,8 @@ Based on the same technique as long polling.
 
 Unidirectional. Allows servers to update clients as long as the client has the appropriate code setup.
 
-Most browsers today [support it](https://caniuse.com/eventsource). No libraries needed. Just declare:
+Most browsers today [support it](https://caniuse.com/eventsource). 
+No libraries needed. Just declare:
 
 ```javascript
 new EventSource("url");
@@ -78,7 +79,7 @@ And the server must respond with the following in its header:
 
 ```json
 {
-    "COnnection": "keep-alive",
+    "Connection": "keep-alive",
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache"
 }
@@ -102,7 +103,7 @@ And the server must respond with the following in its header:
 
 The format to send data is:
 
-```plaintext
+```plaintext 
 data: somedata \n\n
 ```
 
