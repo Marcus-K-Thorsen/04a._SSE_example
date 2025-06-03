@@ -10,7 +10,7 @@ app.get("/jokes", (req, res) => {
     res.writeHead(200, {
         // Set headers to keep the connection open and specify the content type as SSE
         "Connection": "keep-alive", // Keeps the connection open for continuous event streaming
-        "Content-Type": "text/event-stream", // Ensures the browser treats the response as an event stream
+        "Content-Type": "text/event-stream", // IMPORTANT: Ensures the browser treats the response as an event stream
         "Cache-Control": "no-cache" // Prevents caching to ensure real-time updates
     });
 
